@@ -1,9 +1,7 @@
 import os
-import glob
 import sqlite3
 import streamlit as st
 import pandas as pd
-import pyarrow.parquet as pq  
 import datetime
 
 # Helper function to check if a table exists in SQLite
@@ -11,37 +9,6 @@ def table_exists(conn, table_name):
     cur = conn.cursor()
     cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table_name,))
     return cur.fetchone() is not None
-
-def generate_sqlite_from_parquet(parquet_pattern, sqlite_db_path):
-    st.write("Iniciando a leitura dos arquivos Parquet em batches...")
-    files = glob.glob(parquet_pattern)
-    st.write(f"Arquivos encontrados: {len(files)}")
-    if not files:
-        st.error("Nenhum arquivo encontrado com o padrão especificado.")
-        return
-    progress_bar = st.progress(0)
-    conn = sqlite3.connect(sqlite_db_path)
-    first_file = True
-    total_files = len(files)
-    file_counter = 0
-    for file in files:
-        st.write(f"Lendo arquivo: {file}")
-        pf = pq.ParquetFile(file)
-        total_groups = pf.num_row_groups
-        for i in range(total_groups):
-            st.write(f"Processando batch {i+1} de {total_groups} do arquivo {file}...")
-            batch = pf.read_row_group(i)
-            pdf = batch.to_pandas()
-            if first_file:
-                pdf.to_sql('despesas', conn, if_exists='replace', index=False)
-                first_file = False
-            else:
-                pdf.to_sql('despesas', conn, if_exists='append', index=False)
-        file_counter += 1
-        progress_bar.progress(file_counter / total_files)
-    conn.close()
-    st.write("Leitura concluída. Banco de dados criado com sucesso!")
-    return
 
 def load_data_from_sqlite(sqlite_db_path):
     conn = sqlite3.connect(sqlite_db_path)
@@ -127,40 +94,11 @@ def main():
     init_session_state()  # Ensure defaults are set early
 
     sqlite_db = "despesas.db"
-    parquet_dir = "/Users/leonardodias/Documents/Arvor/GastosDesgov2023ateJan2025/data/Despesas"
-    
-    # Debug: lista todo o conteúdo da pasta
-    if os.path.isdir(parquet_dir):
-        folder_contents = os.listdir(parquet_dir)
-        st.write("Conteúdo da pasta dos Parquet:", folder_contents)
-    else:
-        st.error(f"Pasta não encontrada: {parquet_dir}")
+    # Ensure the SQLite database exists
+    if not os.path.exists(sqlite_db):
+        st.error("Banco de dados SQLite não encontrado!")
         return
 
-    # Tenta o padrão "*.crc" primeiro e, se nada for encontrado, tenta "*.parquet"
-    parquet_pattern = os.path.join(parquet_dir, "*.crc")
-    files = glob.glob(parquet_pattern)
-    if not files:
-        st.warning("Nenhum arquivo .crc encontrado. Tentando padrão .parquet...")
-        parquet_pattern = os.path.join(parquet_dir, "*.parquet")
-        files = glob.glob(parquet_pattern)
-        st.write(f"Arquivos encontrados com novo padrão: {len(files)}")
-    else:
-        st.write(f"Arquivos .crc encontrados: {len(files)}")
-    
-    if os.path.exists(sqlite_db):
-        conn = sqlite3.connect(sqlite_db)
-        if table_exists(conn, "despesas"):
-            st.write("Arquivo SQLite encontrado e tabela 'despesas' existente. Carregando dados...")
-        else:
-            st.write("Arquivo SQLite encontrado, mas tabela 'despesas' inexistente. Gerando a partir dos arquivos Parquet...")
-            conn.close()
-            generate_sqlite_from_parquet(parquet_pattern, sqlite_db)
-        conn.close()
-    else:
-        st.write("Arquivo SQLite não encontrado. Gerando a partir dos arquivos Parquet...")
-        generate_sqlite_from_parquet(parquet_pattern, sqlite_db)
-    
     # Paginação para visualização rápida (opcional)
     limit = st.number_input("Número de linhas para exibir (visualização paginada)", min_value=1, value=1000, step=1)
     offset = st.number_input("Offset (linha inicial)", min_value=0, value=0, step=1000)
