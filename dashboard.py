@@ -93,7 +93,7 @@ def main():
     st.title("Dashboard de Dados Crus - Despesas")
     init_session_state()  # Ensure defaults are set early
 
-    sqlite_db = "despesas.db"
+    sqlite_db = "data/despesas.db"
     # Ensure the SQLite database exists
     if not os.path.exists(sqlite_db):
         st.error("Banco de dados SQLite não encontrado!")
