@@ -552,7 +552,6 @@ servpublic;Political
 auxíliotransporte;Social programs
 hídricos;Environmentalism
 exteri;International
-informacao;Media
 ebserh;Health
 projeto;High risk
 paraíba;High risk
@@ -617,7 +616,7 @@ pagamento;High risk
 transito;High risk
 criacao;High risk
 ferrovias;High risk
-trans;Progressism/woke
+trans;High risk
 rondoni;High risk
 extrajudicial;Judiciary
 piauí;High risk
@@ -676,6 +675,7 @@ ifpr;Education
 ressarcimento;High risk
 tocanti;High risk
 readequacao;High risk
+refinanciamento:Debt
 pnae;Education
 furg;NGOs
 fundiari;Territoriality/indigenous
@@ -782,6 +782,7 @@ básico;Education
 sisceab;Political
 cmdo;Defense
 mobiliarios;High risk
+mobiliaria;Debt
 instfedrondoniacampus;Education
 entes;Political
 geologicoambientais;Environmentalism
@@ -1023,7 +1024,7 @@ semiárido;Environmentalism
 consulado;International
 fununivfedde;Education
 cgaddlog;NGOs
-divida;High risk
+divida;Debt
 aplicadas;Social programs
 univ;Education
 esquadrao;Defense
@@ -1418,7 +1419,7 @@ militar7;Defense
 juros;High risk
 seguranc;Defense
 energética;Oil & Gas
-amazoniasudam;Political
+amazoniasudam;Environmentalism
 desenvolvda;High risk
 superintenddo;Political
 aerodromo;High risk
@@ -1572,7 +1573,7 @@ embrapacnpmf;Political
 manutencao12;High risk
 paradesporto;Social programs
 geracao;High risk
-amazoniainpa;Political
+amazoniainpa;Environmentalism
 institnacional;NGOs
 cidade;High risk
 sfarr;Political
